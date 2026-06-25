@@ -38,14 +38,14 @@ fun NavGraph(
 ) {
     NavHost(navController = navController, startDestination = Routes.SPLASH) {
         composable(Routes.SPLASH) { SplashScreen(navController) }
-        composable(Routes.HOME) { HomeScreen(navController, catalogVm, authVm) }
+        composable(Routes.HOME) { HomeScreen(navController, catalogVm, authVm, cartVm) }
         composable(Routes.FOOD) { FoodScreen(navController, catalogVm) }
         composable(Routes.RIDE) { RideScreen(navController, rideVm, authVm) }
         composable(Routes.SEARCH) { SearchScreen(navController, catalogVm) }
         composable(Routes.AUTH) { AuthScreen(navController, authVm) }
         composable(Routes.PROFILE) { ProfileScreen(navController, authVm) }
         composable(Routes.CART) { CartScreen(navController, cartVm) }
-        composable(Routes.PAYMENT) { PaymentScreen(navController) }
+        composable(Routes.PAYMENT) { PaymentScreen(navController, cartVm, catalogVm) }
         composable(Routes.DRIVER_DASH) { DriverDashboardScreen(navController, viewModel()) }
         composable(Routes.RIDER_DASH) { DriverDashboardScreen(navController, viewModel(), rider = true) }
         composable(Routes.RESTAURANT_DASH) { RestaurantDashboardScreen(navController, viewModel()) }

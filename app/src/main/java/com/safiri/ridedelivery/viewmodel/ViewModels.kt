@@ -77,6 +77,8 @@ class CartViewModel(
     private val _items = MutableStateFlow<List<CartItem>>(emptyList())
     val items: StateFlow<List<CartItem>> = _items
 
+    val selectedAddress = MutableStateFlow<GeoPoint?>(null)
+
     val subtotal: StateFlow<Double> = _items.map { it.sumOf { ci -> ci.lineTotal } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0.0)
 

@@ -8,8 +8,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DirectionsCar
-import androidx.compose.material.icons.filled.Restaurant
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +17,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -28,6 +28,7 @@ import com.safiri.ridedelivery.ui.theme.BrandGreen
 import com.safiri.ridedelivery.ui.theme.BrandGreenDark
 import com.safiri.ridedelivery.util.VehicleInfo
 import com.safiri.ridedelivery.viewmodel.AuthViewModel
+import com.safiri.ridedelivery.viewmodel.CartViewModel
 import com.safiri.ridedelivery.viewmodel.CatalogViewModel
 
 private val foodCategories = listOf(
@@ -40,13 +41,15 @@ private val foodCategories = listOf(
 fun HomeScreen(
     navController: NavController,
     catalogVm: CatalogViewModel,
-    authVm: AuthViewModel
+    authVm: AuthViewModel,
+    cartVm: CartViewModel
 ) {
     LaunchedEffect(Unit) { catalogVm.loadHome() }
     val restaurants by catalogVm.restaurants.collectAsState()
     val drivers by catalogVm.drivers.collectAsState()
     val loading by catalogVm.loading.collectAsState()
     val user by authVm.user.collectAsState()
+    val selectedAddress by cartVm.selectedAddress.collectAsState()
     var category by remember { mutableStateOf("All") }
 
     val filtered = if (category == "All") restaurants
@@ -67,9 +70,39 @@ fun HomeScreen(
                                else "Order food or book a ride"
                 )
             }
+            // Address selector pill
+            item {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .offset(y = (-20).dp)
+                        .clickable { navController.navigate(Routes.CART) },
+                    shape = RoundedCornerShape(12.dp),
+                    shadowElevation = 4.dp,
+                    color = Color.White
+                ) {
+                    Row(
+                        Modifier.padding(14.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Rounded.LocationOn, null, tint = BrandGreen, modifier = Modifier.size(20.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            text = selectedAddress?.address ?: "Set delivery location",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Icon(Icons.Rounded.ChevronRight, null, tint = Color.Gray)
+                    }
+                }
+            }
             // Two big quick-action tiles
             item {
-                Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Row(Modifier.padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     QuickAction("Order food", "🍔", BrandGreen, Modifier.weight(1f)) {
                         navController.navigate(Routes.FOOD)
                     }
